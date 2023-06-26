@@ -77,6 +77,16 @@ if ($options['first_run']) {
     if ($updateprotocol) {
         set_config('webserviceprotocols', implode(',', $activeprotocols));
     }
+
+    // enable login for webservices other than moodle mobile service
+    $cap = new stdClass();
+    $cap->contextid    = 1;  // no idea what this is for, but it seems this is always 1
+    $cap->roleid       = 7;  // TODO get this somehow
+    $cap->capability   = 'moodle/webservice:createtoken';
+    $cap->permission   = 1;  // no idea what this is for, but it seems this is always 1
+    $cap->timemodified = time();
+    $cap->modifierid   = 0;
+    $DB->insert_record('role_capabilities', $cap);
 }
 
 
