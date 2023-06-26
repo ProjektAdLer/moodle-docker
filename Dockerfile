@@ -1,7 +1,9 @@
-FROM bitnami/moodle
+FROM bitnami/moodle:${MOODLE_VERSION:-latest}
 
-COPY entrypoint_additional_php_vars.sh /opt/
+RUN apt update && apt install curl unzip nano -y
 
-ENTRYPOINT [ "/opt/entrypoint_additional_php_vars.sh" ]
+COPY entrypoint_adler.sh setup.php setup.sh /opt/adler/
+
+ENTRYPOINT [ "/opt/adler/entrypoint_adler.sh" ]
 CMD [ "/opt/bitnami/scripts/moodle/run.sh" ]
 

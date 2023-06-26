@@ -10,5 +10,12 @@
 ! is_empty_value "$PHP_OUTPUT_BUFFERING" && info "Setting PHP output_buffering option" && php_conf_set output_buffering "$PHP_OUTPUT_BUFFERING" "$PHP_CONF_FILE"
 
 
+# inject adler update
+echo "inject adler update"
+sed -i '/^exec "$@".*/i /opt/adler/setup.sh' /opt/bitnami/scripts/moodle/entrypoint.sh
+
+
 # continue with original entrypoint.sh
 /opt/bitnami/scripts/moodle/entrypoint.sh "$@"
+
+
