@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if test -f /bitnami/moodle/setup.php; then
         echo "adler setup.php exists -> this is not the first run"
@@ -11,3 +11,5 @@ else
 fi
 
 su daemon -s /bin/sh -c "php /bitnami/moodle/setup.php --first_run=$first_run"
+
+echo "finished adler setup/update script"
