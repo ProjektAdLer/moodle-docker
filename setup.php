@@ -3,8 +3,9 @@
 # - curl
 # - unzip
 
-# todo no cli logs
-# todo: after script: Invalid permissions detected when trying to create a directory. Turn debugging on for further details.
+# TODO
+# cleanup / multiple moodle <-> plugin combinations
+# update reamde: new user
 
 define('CLI_SCRIPT', true);
 
@@ -14,6 +15,9 @@ $config_php_path = __DIR__ . '/config.php';
 require_once($config_php_path);
 require_once($CFG->libdir . "/clilib.php");
 require_once($CFG->libdir . "/moodlelib.php");
+require_once($CFG->libdir . "/externallib.php");
+
+use \core\event\user_created;
 
 ## define dummy function for syntax highlighting
 if (!function_exists('cli_writeln')) {
@@ -22,6 +26,10 @@ if (!function_exists('cli_writeln')) {
     function cli_get_params(array $longoptions, array $shortmapping=null): object {return (object)[];}
     function set_config($name, $value, $plugin = null) {}
     define('MOODLE_OFFICIAL_MOBILE_SERVICE', 'moodle_mobile_app');
+    function get_config($plugin, $name = null): mixed {return '';}
+    function user_create_user($user, $updatepassword = true, $triggerevent = true):int {return 1;}
+    function profile_save_data(stdClass $usernew): void {}
+    function get_complete_user_data($field, $value, $mnethostid = null, $throwexception = false): mixed {return '';}
 }
 
 
@@ -31,11 +39,21 @@ $help = "Command line tool to uninstall plugins.
 Options:
     -h --help                   Print this help.
     --first_run                 Set this flag if this script is run the first time
+    --default_user_name         Plain user that will be created during first_run. This user does not have any special permissions, it will be a default \"student\". This field will be the login name and used as default value for optional fields. name and password parameters are required if this user should be created.
+    --default_user_password
+    --default_user_first_name
+    --default_user_last_name
+    --default_user_email
 ";
 
 list($options, $unrecognised) = cli_get_params([
     'help' => false,
     'first_run' => false,
+    'default_user_name' => false,
+    'default_user_password' => false,
+    'default_user_first_name' => false,
+    'default_user_last_name' => false,
+    'default_user_email' => false,
 ], []);
 
 if ($unrecognised) {
@@ -49,14 +67,43 @@ if ($options['help']) {
 }
 ## end cli opts
 
+// add user
+// originally taken from moodlelib ~4.2, but not much left of it
+require_once($CFG->dirroot.'/user/profile/lib.php');
+require_once($CFG->dirroot.'/user/lib.php');
+function create_user($username, $password, $first_name, $last_name, $email) {
+    $newuser = new stdClass();
+    // Just in case check text case.
+    $newuser->username = trim(strtolower($username));
+    $newuser->password = $password;
+    $newuser->email = $email;
+    $newuser->firstname = $first_name;
+    $newuser->lastname = $last_name;
+    $newuser->auth = 'manual';
+    $newuser->lang = 'en';
+    $newuser->timecreated = time();
+    $newuser->timemodified = $newuser->timecreated;
+    $newuser->confirmed = 1;
+    $newuser->mnethostid = get_config('core', 'mnet_localhost_id');
+    $newuser->description = "Created during setup";
 
-// add "$CFG->enablewebservices = true;" to config.php
+    $newuser->id = user_create_user($newuser, true, false);
+//    Setting the password this way ignore password validation rules
+//    update_internal_user_password($user, $password);
+
+    // Save user profile data.
+    profile_save_data($newuser);
+
+    $user = get_complete_user_data('id', $newuser->id);
+
+    // Trigger event.
+    user_created::create_from_userid($newuser->id)->trigger();
+
+    return $user;
+}
+
+
 if ($options['first_run']) {
-//    if (is_writable($config_php_path)) {
-//        file_put_contents($config_php_path, "\n\$CFG->enablewebservices = true;\n", FILE_APPEND);
-//    } else {
-//        cli_error('file is not writeable ' . $config_php_path);
-//    }
     // enable webservices
     set_config('enablewebservices', true);
 
@@ -87,6 +134,15 @@ if ($options['first_run']) {
     $cap->timemodified = time();
     $cap->modifierid   = 0;
     $DB->insert_record('role_capabilities', $cap);
+
+    // create user
+    if ($options['default_user_name'] && $options['default_user_password']) {
+        $first_name = $options['default_user_first_name'] ? : $options['default_user_name'];
+        $last_name = $options['default_user_last_name'] ? : $options['default_user_name'];
+        $email = $options['default_user_email'] ? : $options['default_user_name'] . '@example.example';
+
+        create_user($options['default_user_name'], $options['default_user_password'], $first_name, $last_name, $email);
+    }
 }
 
 

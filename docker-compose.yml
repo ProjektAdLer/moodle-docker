@@ -24,6 +24,8 @@ services:
       - MOODLE_DATABASE_USER=bn_moodle
       - MOODLE_DATABASE_PASSWORD=abcd
       - MOODLE_DATABASE_NAME=bitnami_moodle
+      - DEFAULT_USER_NAME=test
+      - DEFAULT_USER_PASSWORD=12345678qQ!
       # ALLOW_EMPTY_PASSWORD is recommended only for development.
 #      - ALLOW_EMPTY_PASSWORD=yes
     volumes:
