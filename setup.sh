@@ -10,6 +10,6 @@ else
         first_run=true
 fi
 
-su daemon -s /bin/sh -c "php /bitnami/moodle/setup.php --first_run=$first_run ${DEFAULT_USER_NAME:+--default_user_name=$DEFAULT_USER_NAME} ${DEFAULT_USER_PASSWORD:+--default_user_password=$DEFAULT_USER_PASSWORD} ${DEFAULT_USER_FIRST_NAME:+--default_user_first_name=$DEFAULT_USER_FIRST_NAME} ${DEFAULT_USER_LAST_NAME:+--default_user_last_name=$DEFAULT_USER_LAST_NAME} ${DEFAULT_USER_EMAIL:+--default_user_email=$DEFAULT_USER_EMAIL}"
+su daemon -s /bin/sh -c "php /bitnami/moodle/setup.php --first_run=$first_run ${USER_NAME:+--user_name=$USER_NAME} ${USER_PASSWORD:+--user_password=$USER_PASSWORD} ${USER_FIRST_NAME:+--user_first_name=$USER_FIRST_NAME} ${USER_LAST_NAME:+--user_last_name=$USER_LAST_NAME} ${USER_EMAIL:+--user_email=$USER_EMAIL} ${USER_ROLE:+--user_role=$USER_ROLE}"
 
 echo "finished adler setup/update script"
