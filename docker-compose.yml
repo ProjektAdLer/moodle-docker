@@ -13,7 +13,11 @@ services:
     volumes:
       - 'mariadb_data:/bitnami/mariadb'
   moodle:
-    build: .
+    build:
+      context: .
+      args:
+        PLUGIN_VERSION: 1.0.0
+        MOODLE_VERSION: 4.1
     ports:
       - '80:8080'
       - '443:8443'
@@ -26,7 +30,7 @@ services:
       - MOODLE_DATABASE_NAME=bitnami_moodle
       - USER_NAME=test,test2
       - USER_PASSWORD=12345678qQ!,12345678qQ!
-      - USER_ROLE=false,manager
+      - USER_ROLE=manager,false
       # ALLOW_EMPTY_PASSWORD is recommended only for development.
 #      - ALLOW_EMPTY_PASSWORD=yes
     volumes:

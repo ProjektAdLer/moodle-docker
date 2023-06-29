@@ -1,6 +1,9 @@
+# Moodle Bitnami Image Extension - User Creation, PHP Environment Variables, and AdLer Setup
 This project extends the bitnami/moodle image with the following features:
 - Setting up AdLer (after the first start the Moodle part of AdLer is fully set up).
+- Create user(s) on first start 
 - Adding another environment variable to set a php.ini option.
+
 
 
 ## Windows Users
@@ -21,3 +24,47 @@ RUN cat setup.sh | dos2unix > setup.sh.tmp
 RUN mv setup.sh.tmp setup.sh
 RUN chmod +x setup.sh
 ```
+
+## Environment variables
+### PHP environment variables
+
+| Variable                | Description                                                                       |
+|-------------------------|-----------------------------------------------------------------------------------|
+| `PHP_OUTPUT_BUFFERING`  | Controls the output buffering behavior of PHP. Set it to adjust the buffering setting in the `php.ini` file. |
+
+### Moodle user creation variables
+
+| Variable             | Description                                                                                       |
+|----------------------|---------------------------------------------------------------------------------------------------|
+| `USER_NAME`          | Specifies the login name of a user to be created during the initial setup.                         |
+| `USER_PASSWORD`      | Specifies the password for the user created during the initial setup.                              |
+| `USER_FIRST_NAME`    | Specifies the first name of the user created during the initial setup.                             |
+| `USER_LAST_NAME`     | Specifies the last name of the user created during the initial setup.                              |
+| `USER_EMAIL`         | Specifies the email address of the user created during the initial setup.                          |
+| `USER_ROLE`          | Specifies the short name of a role to assign to the user created during the initial setup.        |
+
+#### Examples
+Example one user
+```
+USER_NAME=john_doe
+USER_PASSWORD=Pass1234
+USER_FIRST_NAME=John
+```
+Example three users
+```
+USER_NAME=user1,user2,user3
+USER_PASSWORD=Secret123,Secret123,Pass1234
+USER_FIRST_NAME=First1,First2,First3
+USER_LAST_NAME=Last1,Last2,Last3
+USER_EMAIL=user1@example.com,user2@example.com,user3@example.com
+USER_ROLE=false,manager,false
+```
+
+## Docker Build Arguments
+
+When building the Docker image for this project, you can customize the following arguments:
+
+- `MOODLE_VERSION`: Specifies the version of Moodle to be used in the image. The default value is `latest`.
+- `PLUGIN_VERSION`: Specifies the version of the Moodle plugin to be included in the image. The default value is `main`.
+
+These arguments allow you to control the versions of Moodle and the plugin that are used during the image build process. You can adjust these values according to your specific requirements and preferences.

@@ -44,6 +44,7 @@ $help = "Command line tool to uninstall plugins.
 Options:
     -h --help           Print this help.
     --first_run         Set this flag if this script is run the first time
+    --plugin_version    Version of AdLer plugins to install. main or exact release name. Defaults to main.
     --user_name         Plain user that will be created during first_run. This user does not have any special permissions, it will be a default \"student\". This field will be the login name and used as default value for optional fields. name and password parameters are required if this user should be created. This is a comma separated list. To add multiple users use for example --user_name=user1,user,user3. All used switches has to have the same array length. Use false if you want the default behavior (eg --user_first_name=John,false,Peter)
     --user_password     Passwords are not allowed to contain \",\"
     --user_first_name
@@ -55,6 +56,7 @@ Options:
 list($options, $unrecognised) = cli_get_params([
     'help' => false,
     'first_run' => false,
+    'plugin_version' => 'main',
     'user_name' => false,
     'user_password' => false,
     'user_first_name' => false,
@@ -185,16 +187,30 @@ if ($options['first_run']) {
 
 
 // install plugins
-$plugins = [
-    [
-        "path" => "local/adler",
-        "url" => "https://github.com/ProjektAdLer/MoodlePluginLocal/archive/refs/heads/main.zip"
-    ],
-    [
-        "path" => "availability/condition/adler",
-        "url" => "https://github.com/ProjektAdLer/MoodlePluginAvailability/archive/refs/heads/main.zip"
-    ],
-];
+if ($options['plugin_version'] == 'main') {
+    $plugins = [
+        [
+            "path" => "local/adler",
+            "url" => "https://github.com/ProjektAdLer/MoodlePluginLocal/archive/refs/heads/main.zip"
+        ],
+        [
+            "path" => "availability/condition/adler",
+            "url" => "https://github.com/ProjektAdLer/MoodlePluginAvailability/archive/refs/heads/main.zip"
+        ],
+    ];
+} else {
+    $plugins = [
+        [
+            "path" => "local/adler",
+            "url" => "https://github.com/ProjektAdLer/MoodlePluginLocal/archive/refs/tags/" . $options['plugin_version'] . ".zip"
+        ],
+        [
+            "path" => "availability/condition/adler",
+            "url" => "https://github.com/ProjektAdLer/MoodlePluginAvailability/archive/refs/tags/" . $options['plugin_version'] . ".zip"
+        ],
+    ];
+}
+
 foreach ($plugins as $plugin) {
     $plugin_path = $CFG->dirroot . DIRECTORY_SEPARATOR . $plugin["path"];
 
