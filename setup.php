@@ -80,6 +80,43 @@ if ($options['help']) {
 // originally taken from moodlelib ~4.2, but not much left of it
 require_once($CFG->dirroot . '/user/profile/lib.php');
 require_once($CFG->dirroot . '/user/lib.php');
+
+/** Get Infos (incl download urls) of release to update to. Will return false if nothing to update
+ * @param string $github_repo GitHub repo of the plugin, <group>/<repo>
+ * @param string $version Version pattern to match against. Eg 1 will match all Releases 1.x.y, 2.7 will match 2.7.x
+ * @param string|null $old_version Current version
+ * @return object|false
+ */
+function get_updated_release_info(string $github_repo, string $version, string $old_version = null) {
+    $url = "https://api.github.com/repos/" . $github_repo . "/releases";
+    $context = stream_context_create(['http' => ['user_agent' => 'PHP']]);
+    $response = file_get_contents($url, false, $context);
+//    $response = "[{\"url\":\"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375\",\"assets_url\":\"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375/assets\",\"upload_url\":\"https://uploads.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375/assets{?name,label}\",\"html_url\":\"https://github.com/ProjektAdLer/MoodlePluginLocal/releases/tag/1.0.0\",\"id\":108886375,\"author\":{\"login\":\"Glutamat42\",\"id\":51326311,\"node_id\":\"MDQ6VXNlcjUxMzI2MzEx\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/51326311?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/Glutamat42\",\"html_url\":\"https://github.com/Glutamat42\",\"followers_url\":\"https://api.github.com/users/Glutamat42/followers\",\"following_url\":\"https://api.github.com/users/Glutamat42/following{/other_user}\",\"gists_url\":\"https://api.github.com/users/Glutamat42/gists{/gist_id}\",\"starred_url\":\"https://api.github.com/users/Glutamat42/starred{/owner}{/repo}\",\"subscriptions_url\":\"https://api.github.com/users/Glutamat42/subscriptions\",\"organizations_url\":\"https://api.github.com/users/Glutamat42/orgs\",\"repos_url\":\"https://api.github.com/users/Glutamat42/repos\",\"events_url\":\"https://api.github.com/users/Glutamat42/events{/privacy}\",\"received_events_url\":\"https://api.github.com/users/Glutamat42/received_events\",\"type\":\"User\",\"site_admin\":false},\"node_id\":\"RE_kwDOIidAYc4GfXln\",\"tag_name\":\"1.0.0\",\"target_commitish\":\"main\",\"name\":\"v1.0.0\",\"draft\":false,\"prerelease\":false,\"created_at\":\"2023-06-16T14:30:58Z\",\"published_at\":\"2023-06-16T14:50:20Z\",\"assets\":[],\"tarball_url\":\"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/tarball/1.0.0\",\"zipball_url\":\"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/zipball/1.0.0\",\"body\":\"This initial release of the project supports both Moodle 4.2 and Moodle 4.1 (LTS) versions. It introduces essential functionality to enhance the project's capabilities. Key highlights of this release include:\\r\\n\\r\\n- Compatibility with Moodle 4.2 and Moodle 4.1 (LTS)\\r\\n- API endpoints for integration with external systems (backend)\\r\\n- Backup and restore functionality\\r\\n- Plugin interface for clear communication functions between plugins (availability_adler)\\r\\n- Documentation\"}]";
+//    $response = "[\n  {\n    \"url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375\",\n    \"assets_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375/assets\",\n    \"upload_url\": \"https://uploads.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375/assets{?name,label}\",\n    \"html_url\": \"https://github.com/ProjektAdLer/MoodlePluginLocal/releases/tag/1.0.0\",\n    \"id\": 108886375,\n    \"node_id\": \"RE_kwDOIidAYc4GfXln\",\n    \"tag_name\": \"1.0.0\",\n    \"target_commitish\": \"main\",\n    \"name\": \"v1.0.0\",\n    \"draft\": false,\n    \"prerelease\": false,\n    \"created_at\": \"2023-06-16T14:30:58Z\",\n    \"published_at\": \"2023-06-16T14:50:20Z\",\n    \"assets\": [],\n    \"tarball_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/tarball/1.0.0\",\n    \"zipball_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/zipball/1.0.0\"\n  },\n  {\n    \"url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375\",\n    \"assets_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375/assets\",\n    \"upload_url\": \"https://uploads.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375/assets{?name,label}\",\n    \"html_url\": \"https://github.com/ProjektAdLer/MoodlePluginLocal/releases/tag/1.0.0\",\n    \"id\": 108886375,\n    \"node_id\": \"RE_kwDOIidAYc4GfXln\",\n    \"tag_name\": \"1.0.3\",\n    \"target_commitish\": \"main\",\n    \"name\": \"v1.0.3\",\n    \"draft\": false,\n    \"prerelease\": false,\n    \"created_at\": \"2023-06-16T14:30:58Z\",\n    \"published_at\": \"2023-06-16T14:50:20Z\",\n    \"assets\": [],\n    \"tarball_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/tarball/1.0.0\",\n    \"zipball_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/zipball/1.0.0\"\n  },\n  {\n    \"url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375\",\n    \"assets_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375/assets\",\n    \"upload_url\": \"https://uploads.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375/assets{?name,label}\",\n    \"html_url\": \"https://github.com/ProjektAdLer/MoodlePluginLocal/releases/tag/1.0.0\",\n    \"id\": 108886375,\n    \"node_id\": \"RE_kwDOIidAYc4GfXln\",\n    \"tag_name\": \"2.0.0\",\n    \"target_commitish\": \"main\",\n    \"name\": \"v2.0.0\",\n    \"draft\": false,\n    \"prerelease\": false,\n    \"created_at\": \"2023-06-16T14:30:58Z\",\n    \"published_at\": \"2023-06-16T14:50:20Z\",\n    \"assets\": [],\n    \"tarball_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/tarball/1.0.0\",\n    \"zipball_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/zipball/1.0.0\"\n  },\n  {\n    \"url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375\",\n    \"assets_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375/assets\",\n    \"upload_url\": \"https://uploads.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375/assets{?name,label}\",\n    \"html_url\": \"https://github.com/ProjektAdLer/MoodlePluginLocal/releases/tag/1.0.0\",\n    \"id\": 108886375,\n    \"node_id\": \"RE_kwDOIidAYc4GfXln\",\n    \"tag_name\": \"2.0.1\",\n    \"target_commitish\": \"main\",\n    \"name\": \"v2.0.1\",\n    \"draft\": false,\n    \"prerelease\": false,\n    \"created_at\": \"2023-06-16T14:30:58Z\",\n    \"published_at\": \"2023-06-16T14:50:20Z\",\n    \"assets\": [],\n    \"tarball_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/tarball/1.0.0\",\n    \"zipball_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/zipball/1.0.0\"\n  },\n  {\n    \"url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375\",\n    \"assets_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375/assets\",\n    \"upload_url\": \"https://uploads.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375/assets{?name,label}\",\n    \"html_url\": \"https://github.com/ProjektAdLer/MoodlePluginLocal/releases/tag/1.0.0\",\n    \"id\": 108886375,\n    \"node_id\": \"RE_kwDOIidAYc4GfXln\",\n    \"tag_name\": \"2.1.0\",\n    \"target_commitish\": \"main\",\n    \"name\": \"v2.1.0\",\n    \"draft\": false,\n    \"prerelease\": false,\n    \"created_at\": \"2023-06-16T14:30:58Z\",\n    \"published_at\": \"2023-06-16T14:50:20Z\",\n    \"assets\": [],\n    \"tarball_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/tarball/1.0.0\",\n    \"zipball_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/zipball/1.0.0\"\n  },\n    {\n    \"url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375\",\n    \"assets_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375/assets\",\n    \"upload_url\": \"https://uploads.github.com/repos/ProjektAdLer/MoodlePluginLocal/releases/108886375/assets{?name,label}\",\n    \"html_url\": \"https://github.com/ProjektAdLer/MoodlePluginLocal/releases/tag/1.0.0\",\n    \"id\": 108886375,\n    \"node_id\": \"RE_kwDOIidAYc4GfXln\",\n    \"tag_name\": \"3.0.0\",\n    \"target_commitish\": \"main\",\n    \"name\": \"v3.0.0\",\n    \"draft\": false,\n    \"prerelease\": false,\n    \"created_at\": \"2023-06-16T14:30:58Z\",\n    \"published_at\": \"2023-06-16T14:50:20Z\",\n    \"assets\": [],\n    \"tarball_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/tarball/1.0.0\",\n    \"zipball_url\": \"https://api.github.com/repos/ProjektAdLer/MoodlePluginLocal/zipball/1.0.0\"\n  }\n]";
+
+    $releases = json_decode($response, true);
+    $matchingReleases = array_filter($releases, function ($release) use ($version) {
+        return strpos($release['tag_name'], $version) === 0;
+    });
+
+    usort($matchingReleases, function ($a, $b) {
+        return version_compare($a['tag_name'], $b['tag_name'], '<=') ? 1 : -1;
+    });
+
+    $latestRelease = reset($matchingReleases);
+
+    if ($old_version !== null && $latestRelease['tag_name'] === $old_version) {
+        return false;
+    }
+
+    return (object)[
+        'tag_name' => $latestRelease['name'],
+        'version' => $latestRelease['tag_name'],
+        'zip_url' => $latestRelease['zipball_url'],
+        'tar_url' => $latestRelease['tarball_url']
+    ];
+}
+
 function create_one_user($username, $password, $first_name, $last_name, $email, $role) {
     $newuser = new stdClass();
     // Just in case check text case.
@@ -187,6 +224,8 @@ if ($options['first_run']) {
 
 
 // install plugins
+// TODO: only update if main or new version is higher
+// TODO: remove write permissions -> moodle can't update the plugin
 if ($options['plugin_version'] == 'main') {
     $plugins = [
         [
@@ -199,17 +238,23 @@ if ($options['plugin_version'] == 'main') {
         ],
     ];
 } else {
-    $plugins = [
-        [
+    $plugins = [];
+    $info = get_updated_release_info("ProjektAdLer/MoodlePluginLocal", $options['plugin_version']);
+    if ($info) {
+        $plugins[] = [
             "path" => "local/adler",
-            "url" => "https://github.com/ProjektAdLer/MoodlePluginLocal/archive/refs/tags/" . $options['plugin_version'] . ".zip"
-        ],
-        [
+            "url" => $info->zip_url
+        ];
+    }
+    $info = get_updated_release_info("ProjektAdler/MoodlePluginAvailability", $options['plugin_version']);
+    if ($info) {
+        $plugins[] = [
             "path" => "availability/condition/adler",
-            "url" => "https://github.com/ProjektAdLer/MoodlePluginAvailability/archive/refs/tags/" . $options['plugin_version'] . ".zip"
-        ],
-    ];
+            "url" => $info->zip_url
+        ];
+    }
 }
+echo json_encode($plugins);
 
 foreach ($plugins as $plugin) {
     $plugin_path = $CFG->dirroot . DIRECTORY_SEPARATOR . $plugin["path"];
