@@ -93,6 +93,16 @@ if ($options['first_run']) {
     $cap->modifierid = 0;
     $DB->insert_record('role_capabilities', $cap);
 
+    // enable rest:use for webservices other than moodle mobile service
+    $cap = new stdClass();
+    $cap->contextid = 1;  // no idea what this is for, but it seems this is always 1
+    $cap->roleid = $role_id = $DB->get_record('role', array('shortname' => 'user'))->id;  # role id of "authenticated user"
+    $cap->capability = 'webservice/rest:use';
+    $cap->permission = 1;  // no idea what this is for, but it seems this is always 1
+    $cap->timemodified = time();
+    $cap->modifierid = 0;
+    $DB->insert_record('role_capabilities', $cap);
+
     // create users
     if ($options['user_name']) {
         cli_writeln("creating user(s)");
