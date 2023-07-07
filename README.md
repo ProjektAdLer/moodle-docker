@@ -34,14 +34,14 @@ RUN chmod +x setup.sh
 
 ### Moodle user creation variables
 
-| Variable             | Description                                                                                       |
-|----------------------|---------------------------------------------------------------------------------------------------|
-| `USER_NAME`          | Specifies the login name of a user to be created during the initial setup.                         |
-| `USER_PASSWORD`      | Specifies the password for the user created during the initial setup.                              |
-| `USER_FIRST_NAME`    | Specifies the first name of the user created during the initial setup.                             |
-| `USER_LAST_NAME`     | Specifies the last name of the user created during the initial setup.                              |
-| `USER_EMAIL`         | Specifies the email address of the user created during the initial setup.                          |
-| `USER_ROLE`          | Specifies the short name of a role to assign to the user created during the initial setup.        |
+| Variable             | Description                                                                                                                                                             |
+|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `USER_NAME`          | Specifies the login name of a user to be created during the initial setup.                                                                                              |
+| `USER_PASSWORD`      | Specifies the password for the user created during the initial setup. Passwords have to follow moodle password validation rules. Otherwise the setup script will break. |
+| `USER_FIRST_NAME`    | Specifies the first name of the user created during the initial setup.                                                                                                  |
+| `USER_LAST_NAME`     | Specifies the last name of the user created during the initial setup.                                                                                                   |
+| `USER_EMAIL`         | Specifies the email address of the user created during the initial setup.                                                                                               |
+| `USER_ROLE`          | Specifies the short name of a role to assign to the user created during the initial setup.                                                                              |
 
 #### Examples
 Example one user

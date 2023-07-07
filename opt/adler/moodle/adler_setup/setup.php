@@ -27,7 +27,7 @@ Options:
     --first_run         Set this flag if this script is run the first time
     --plugin_version    Version of AdLer plugins to install. main or exact release name. Defaults to main.
     --user_name         Plain user that will be created during first_run. This user does not have any special permissions, it will be a default \"student\". This field will be the login name and used as default value for optional fields. name and password parameters are required if this user should be created. This is a comma separated list. To add multiple users use for example --user_name=user1,user,user3. All used switches has to have the same array length. Use false if you want the default behavior (eg --user_first_name=John,false,Peter)
-    --user_password     Passwords are not allowed to contain \",\"
+    --user_password     Passwords are not allowed to contain \",\". Passwords have to follow moodle password validation rules.
     --user_first_name
     --user_last_name
     --user_email
