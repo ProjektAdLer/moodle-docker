@@ -73,6 +73,7 @@ function update_plugin($plugin) {
 
 function create_one_user($username, $password, $first_name, $last_name, $email, $role) {
     // originally taken from moodlelib ~4.2, but not much left of it
+    cli_writeln('creating user "' . $username . '"');
 
     $newuser = new stdClass();
     // Just in case check text case.
@@ -89,7 +90,11 @@ function create_one_user($username, $password, $first_name, $last_name, $email, 
     $newuser->mnethostid = get_config('core', 'mnet_localhost_id');
     $newuser->description = "Created during setup";
 
-    $newuser->id = user_create_user($newuser, true, false);
+    try {
+        $newuser->id = user_create_user($newuser, true, false);
+    } catch (Throwable $e) {
+        cli_error(json_encode($e));
+    }
 //    Setting the password this way ignore password validation rules
 //    update_internal_user_password($user, $password);
 
@@ -108,6 +113,7 @@ function create_one_user($username, $password, $first_name, $last_name, $email, 
         role_assign($role_id, $user->id, 1);
     }
 
+    cli_writeln('user created');
     return $user;
 }
 

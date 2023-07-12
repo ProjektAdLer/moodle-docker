@@ -59,7 +59,7 @@ if ($options['help']) {
 
 $options['first_run'] = $options['first_run'] == "true";
 ## end cli opts
-cli_writeln('CLI options: ' . json_encode($options));
+cli_writeln('CLI options: ' . json_encode((object) array_merge((array) $options, ['user_password' => '***'])));
 
 if ($options['first_run']) {
     // enable webservices
