@@ -14,7 +14,7 @@ services:
       MOODLE_DATABASE_USER: db_user
       MOODLE_DATABASE_PASSWORD: db_pw
       MOODLE_DATABASE_NAME: moodle
-      MOODLE_HOST: localhost
+#      MOODLE_HOST: localhost:8085
       PHP_POST_MAX_SIZE: 2048M
       PHP_UPLOAD_MAX_FILESIZE: 2048M
       USER_NAME: student,manager
