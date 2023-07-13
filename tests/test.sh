@@ -11,7 +11,7 @@ port="8085"
 
 if [ $(id -u) -ne 0 ]
   then echo "Please run as root"
-  exit
+  exit 1
 fi
 
 apt update && apt install -y curl jq
@@ -30,13 +30,14 @@ while [ $COUNT -lt $COUNT_MAX ]; do
   if [ $? -eq 0 ]
     then
       break
-      container_is_up=true
   fi
-  echo "moodle still starting..."
-  sleep 3
+  echo "moodle still starting... This will typically take between 1 and 3 minutes"
+  sleep 5
   COUNT=$((COUNT + 1))
 done
 set -e
+# output docker logs
+docker compose logs
 
 # If the container is not ready, exit with an error
 if [ $COUNT -eq $COUNT_MAX ]; then
@@ -61,7 +62,7 @@ if [ "$course_fullname" != "test" ]; then
   exit 1
 fi
 printf "course upload successful, name is $course_fullname \n"
-token="blub"
+
 # Search uploaded course and get course ID
 new_course_id=$(curl --location "http://${hostname}:${port}/webservice/rest/server.php" \
   --form "wstoken=${token}" \

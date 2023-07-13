@@ -1,0 +1,16 @@
+name: Moodle Plugin CI
+
+on: [push, pull_request]
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: run test script
+        run: |
+          cd tests
+          sudo ./test.sh
