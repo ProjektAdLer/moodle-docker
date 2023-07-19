@@ -66,7 +66,10 @@ function update_plugin($plugin) {
     cli_writeln("Installing plugin...");
     $cmd = "mkdir /tmp/plugin && curl -L {$plugin['url']} -o /tmp/plugin/plugin.zip && unzip /tmp/plugin/plugin.zip -d /tmp/plugin/ && rm /tmp/plugin/plugin.zip && mv /tmp/plugin/* $plugin_path && rm -r /tmp/plugin";
     cli_writeln("Executing: $cmd");
-    exec($cmd);
+    exec($cmd, $blub, $result_code);
+    if ($result_code != 0) {
+        cli_error('command execution failed');
+    }
     // revoke write permissions to prevent update in moodle ui
     chmod($plugin_path, 0555);
 }
