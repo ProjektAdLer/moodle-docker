@@ -68,3 +68,43 @@ When building the Docker image for this project, you can customize the following
 - `PLUGIN_VERSION`: Specifies the version of the Moodle plugin to be included in the image. The default value is `main`.
 
 These arguments allow you to control the versions of Moodle and the plugin that are used during the image build process. You can adjust these values according to your specific requirements and preferences.
+
+
+# Moodle dev env
+## prepare container
+1) Disable Plugin installation in docker compose: `DEVELOP_DONT_INSTALL_PLUGINS: false`
+2) Start container: `docker-compose up -d`
+2) setup xdebug. Run once after container is up: `docker exec moodle-docker-moodle-1 /opt/adler/setup_xdebug.sh`. It is not save (aka tested) tun run this script multiple times.
+
+## setup PHPStorm
+1) setup docker: Settings -> Build, Execution, Deployment -> Docker -> add new
+- choose WSL
+- add Mapping: /opt/bitnami/moodle (Virtual machine path) -> /home/markus/moodle (Local path)
+
+2) setup PHP interpreter: Settings -> PHP -> CLI interpreter -> 2 dots ->
+- add new -> From docker, ...
+    - choose Docker compose
+    - Select docker compose file
+    - Select service moodle
+    - press ok
+- now choose
+    - Lifecycle: Connect to existing container
+    - again ok
+- now ...
+    - Path mappings -> folder icon
+    - add new: not exactly sure what to add there, i think something like \\wsl$\Ubuntu\home\markus\moodle -> /bitnami/moodle \
+      there is an existing mapping with the same remote path, but thats ok
+    - press ok
+- and ok
+
+3) Start debugging (create debug profile)
+
+**Known working**:
+- running script from php storm -> debug works
+
+**Known not working**:
+- there was an overlay fs over /bitnami/moodle, therefore the files in phpstorm do not match the ones in container
+
+**unknown**:
+- debugging webbrowser requests
+

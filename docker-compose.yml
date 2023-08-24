@@ -1,44 +1,47 @@
-version: '2'
+version: '3'
 services:
-  db:
-    image: docker.io/bitnami/mariadb:10.6
-    environment:
-      # ALLOW_EMPTY_PASSWORD is recommended only for development.
-      - MARIADB_USER=bn_moodle
-      - MARIADB_PASSWORD=abcd
-      - MARIADB_ROOT_PASSWORD=abcd
-      - MARIADB_DATABASE=bitnami_moodle
-      - MARIADB_CHARACTER_SET=utf8mb4
-      - MARIADB_COLLATE=utf8mb4_unicode_ci
-    volumes:
-      - 'mariadb_data:/bitnami/mariadb'
   moodle:
     build:
       context: .
       args:
-        PLUGIN_VERSION: 1.0
+        PLUGIN_VERSION: main
         MOODLE_VERSION: 4.2
     ports:
       - '8000:8080'
-      - '443:8443'
     environment:
-      - PHP_OUTPUT_BUFFERING=8193
-      - MOODLE_DATABASE_HOST=db
-      - MOODLE_DATABASE_PORT_NUMBER=3306
-      - MOODLE_DATABASE_USER=bn_moodle
-      - MOODLE_DATABASE_PASSWORD=abcd
-      - MOODLE_DATABASE_NAME=bitnami_moodle
-      - USER_NAME=test,test2
-      - USER_PASSWORD=12345678qQ!,12345678qQ!
-      - USER_ROLE=manager,false
-      # ALLOW_EMPTY_PASSWORD is recommended only for development.
-#      - ALLOW_EMPTY_PASSWORD=yes
+      PHP_OUTPUT_BUFFERING: 8192
+      PHP_POST_MAX_SIZE: 2048M
+      PHP_UPLOAD_MAX_FILESIZE: 2048M
+      MOODLE_DATABASE_HOST: db_moodle
+      MOODLE_DATABASE_PORT_NUMBER: 3306
+      MOODLE_DATABASE_USER: moodle
+      MOODLE_DATABASE_PASSWORD: moodle
+      MOODLE_DATABASE_NAME: moodle
+      BITNAMI_DEBUG: true
+      USER_NAME: student,manager
+      USER_PASSWORD: Student1234!1234,Manager1234!1234
+      USER_ROLE: manager,false
+      DEVELOP_DONT_INSTALL_PLUGINS: true
     volumes:
-      - 'moodle_data:/bitnami/moodle'
-      - 'moodledata_data:/bitnami/moodledata'
+      - /home/markus/moodle:/bitnami/moodle
+      - moodle_moodledata:/bitnami/moodledata
+      - moodle_moodledata_phpu:/bitnami/moodledata_phpu
     depends_on:
-      - db
+      - db_moodle
+    restart: unless-stopped
 
+  db_moodle:
+    image: docker.io/bitnami/mariadb:10.6
+    environment:
+      MARIADB_USER: moodle
+      MARIADB_PASSWORD: moodle
+      MARIADB_ROOT_PASSWORD: root_pw
+      MARIADB_DATABASE: moodle
+      MARIADB_CHARACTER_SET: utf8mb4
+      MARIADB_COLLATE: utf8mb4_unicode_ci
+    volumes:
+      - db_moodle_data:/bitnami/mariadb
+    restart: unless-stopped
 
   phpmyadmin:
     image: phpmyadmin
@@ -47,13 +50,13 @@ services:
     environment:
       PMA_USER: root
       PMA_PASSWORD: abcd
-      PMA_HOSTS: db
+      PMA_HOSTS: db_moodle
     restart: unless-stopped
 
 volumes:
-  mariadb_data:
+  moodle_moodledata_phpu:
     driver: local
-  moodle_data:
+  moodle_moodledata:
     driver: local
-  moodledata_data:
+  db_moodle_data:
     driver: local

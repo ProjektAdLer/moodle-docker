@@ -23,15 +23,16 @@ require_once("lib.php");
 $help = "Command line tool to uninstall plugins.
 
 Options:
-    -h --help           Print this help.
-    --first_run         Set this flag if this script is run the first time
-    --plugin_version    Version of AdLer plugins to install. main or exact release name. Defaults to main.
-    --user_name         Plain user that will be created during first_run. This user does not have any special permissions, it will be a default \"student\". This field will be the login name and used as default value for optional fields. name and password parameters are required if this user should be created. This is a comma separated list. To add multiple users use for example --user_name=user1,user,user3. All used switches has to have the same array length. Use false if you want the default behavior (eg --user_first_name=John,false,Peter)
-    --user_password     Passwords are not allowed to contain \",\". Passwords have to follow moodle password validation rules.
+    -h --help                       Print this help.
+    --first_run                     Set this flag if this script is run the first time
+    --plugin_version                Version of AdLer plugins to install. main or exact release name. Defaults to main.
+    --user_name                     Plain user that will be created during first_run. This user does not have any special permissions, it will be a default \"student\". This field will be the login name and used as default value for optional fields. name and password parameters are required if this user should be created. This is a comma separated list. To add multiple users use for example --user_name=user1,user,user3. All used switches has to have the same array length. Use false if you want the default behavior (eg --user_first_name=John,false,Peter)
+    --user_password                 Passwords are not allowed to contain \",\". Passwords have to follow moodle password validation rules.
     --user_first_name
     --user_last_name
     --user_email
-    --user_role         shortname of one role
+    --user_role                     shortname of one role
+    --develop_dont_install_plugins  DEVELOP OPTION: Skip plugin installation
 ";
 
 list($options, $unrecognised) = cli_get_params([
@@ -44,6 +45,7 @@ list($options, $unrecognised) = cli_get_params([
     'user_last_name' => false,
     'user_email' => false,
     'user_role' => false,
+    'develop_dont_install_plugins' => false,
 ], []);
 
 if ($unrecognised) {
@@ -110,46 +112,48 @@ if ($options['first_run']) {
     }
 }
 
+if (!$options['develop_dont_install_plugins']) {
 // install plugins
-if ($options['plugin_version'] == 'main') {
-    $plugins = [
-        [
-            "path" => $CFG->dirroot . "/local/adler",
-            "url" => "https://github.com/ProjektAdLer/MoodlePluginLocal/archive/refs/heads/main.zip"
-        ],
-        [
-            "path" => $CFG->dirroot . "/availability/condition/adler",
-            "url" => "https://github.com/ProjektAdLer/MoodlePluginAvailability/archive/refs/heads/main.zip"
-        ],
-    ];
-} else {
-    $plugins = [];
-    $info = get_updated_release_info(
-        "ProjektAdLer/MoodlePluginLocal",
-        $options['plugin_version'],
-        core_plugin_manager::instance()->get_plugin_info('local_adler')->release
-    );
-    if ($info) {
-        $plugins[] = [
-            "path" => $CFG->dirroot . "/local/adler",
-            "url" => $info->zip_url
+    if ($options['plugin_version'] == 'main') {
+        $plugins = [
+            [
+                "path" => $CFG->dirroot . "/local/adler",
+                "url" => "https://github.com/ProjektAdLer/MoodlePluginLocal/archive/refs/heads/main.zip"
+            ],
+            [
+                "path" => $CFG->dirroot . "/availability/condition/adler",
+                "url" => "https://github.com/ProjektAdLer/MoodlePluginAvailability/archive/refs/heads/main.zip"
+            ],
         ];
+    } else {
+        $plugins = [];
+        $info = get_updated_release_info(
+            "ProjektAdLer/MoodlePluginLocal",
+            $options['plugin_version'],
+            core_plugin_manager::instance()->get_plugin_info('local_adler')->release
+        );
+        if ($info) {
+            $plugins[] = [
+                "path" => $CFG->dirroot . "/local/adler",
+                "url" => $info->zip_url
+            ];
+        }
+        $info = get_updated_release_info(
+            "ProjektAdler/MoodlePluginAvailability",
+            $options['plugin_version'],
+            core_plugin_manager::instance()->get_plugin_info('local_adler')->release
+        );
+        if ($info) {
+            $plugins[] = [
+                "path" => $CFG->dirroot . "/availability/condition/adler",
+                "url" => $info->zip_url
+            ];
+        }
     }
-    $info = get_updated_release_info(
-        "ProjektAdler/MoodlePluginAvailability",
-        $options['plugin_version'],
-        core_plugin_manager::instance()->get_plugin_info('local_adler')->release
-    );
-    if ($info) {
-        $plugins[] = [
-            "path" => $CFG->dirroot . "/availability/condition/adler",
-            "url" => $info->zip_url
-        ];
-    }
-}
 //echo json_encode($plugins);
-foreach ($plugins as $plugin) {
-    update_plugin($plugin);
+    foreach ($plugins as $plugin) {
+        update_plugin($plugin);
+    }
 }
 
 
