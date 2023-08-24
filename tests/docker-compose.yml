@@ -7,19 +7,20 @@ services:
         PLUGIN_VERSION: 1.0.0
         MOODLE_VERSION: 4.2
     ports:
-      - 8085:8080
+      - '8000:8080'
     environment:
-      MOODLE_DATABASE_HOST: db_moodle
-      MOODLE_DATABASE_PORT_NUMBER: 3306
-      MOODLE_DATABASE_USER: db_user
-      MOODLE_DATABASE_PASSWORD: db_pw
-      MOODLE_DATABASE_NAME: moodle
-#      MOODLE_HOST: localhost:8085
+      DEVELOP_DONT_INSTALL_PLUGINS: false
+      PHP_OUTPUT_BUFFERING: 8192
       PHP_POST_MAX_SIZE: 2048M
       PHP_UPLOAD_MAX_FILESIZE: 2048M
+      MOODLE_DATABASE_HOST: db_moodle
+      MOODLE_DATABASE_PORT_NUMBER: 3306
+      MOODLE_DATABASE_USER: moodle
+      MOODLE_DATABASE_PASSWORD: moodle
+      MOODLE_DATABASE_NAME: moodle
       USER_NAME: student,manager
       USER_PASSWORD: Student1234!1234,Manager1234!1234
-      USER_ROLE: false,manager
+      USER_ROLE: manager,false
     volumes:
       - moodle_moodle:/bitnami/moodle
       - moodle_moodledata:/bitnami/moodledata
@@ -30,8 +31,8 @@ services:
   db_moodle:
     image: docker.io/bitnami/mariadb:10.6
     environment:
-      MARIADB_USER: db_user
-      MARIADB_PASSWORD: db_pw
+      MARIADB_USER: moodle
+      MARIADB_PASSWORD: moodle
       MARIADB_ROOT_PASSWORD: root_pw
       MARIADB_DATABASE: moodle
       MARIADB_CHARACTER_SET: utf8mb4

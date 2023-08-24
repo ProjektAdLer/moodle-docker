@@ -7,7 +7,7 @@ set -e
 username="manager"
 password='Manager1234!1234'
 hostname="localhost"
-port="8085"
+port="8000"
 
 if [ $(id -u) -ne 0 ]
   then echo "Please run as root"
@@ -88,3 +88,5 @@ if [ "$total_matching_courses" -ne 1 ]; then
   exit 1
 fi
 printf "found exactly one course \n"
+
+docker compose down -v
