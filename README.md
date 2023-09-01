@@ -60,6 +60,9 @@ USER_EMAIL=user1@example.com,user2@example.com,user3@example.com
 USER_ROLE=false,manager,false
 ```
 
+## Sample docker-compose.yml
+see [tests/docker-compose.yml](tests/docker-compose.yml)
+
 ## Docker Build Arguments
 
 When building the Docker image for this project, you can customize the following arguments:
