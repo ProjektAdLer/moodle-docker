@@ -1,5 +1,10 @@
 version: '3'
 services:
+#  test:
+#    image: debian
+#    command: sleep infinity
+#    volumes:
+#      - /home/markus/moodle:/moodle
   moodle:
     build:
       context: .
@@ -23,12 +28,13 @@ services:
       USER_ROLE: manager,false
       DEVELOP_DONT_INSTALL_PLUGINS: true
     volumes:
-      - /home/markus/moodle:/bitnami/moodle
+      - moodle_moodle:/bitnami/moodle
+#      - /home/markus/moodle:/bitnami/moodle
       - moodle_moodledata:/bitnami/moodledata
       - moodle_moodledata_phpu:/bitnami/moodledata_phpu
     depends_on:
       - db_moodle
-    restart: unless-stopped
+#    restart: unless-stopped
 
   db_moodle:
     image: docker.io/bitnami/mariadb:10.6
@@ -57,6 +63,8 @@ volumes:
   moodle_moodledata_phpu:
     driver: local
   moodle_moodledata:
+    driver: local
+  moodle_moodle:
     driver: local
   db_moodle_data:
     driver: local
