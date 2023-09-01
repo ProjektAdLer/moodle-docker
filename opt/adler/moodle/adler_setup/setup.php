@@ -59,7 +59,9 @@ if ($options['help']) {
     exit(0);
 }
 
+# cast boolean cli opts
 $options['first_run'] = $options['first_run'] == "true";
+$options['develop_dont_install_plugins'] = $options['develop_dont_install_plugins'] == "true";
 ## end cli opts
 cli_writeln('CLI options: ' . json_encode((object) array_merge((array) $options, ['user_password' => '***'])));
 
@@ -112,7 +114,10 @@ if ($options['first_run']) {
     }
 }
 
-if (!$options['develop_dont_install_plugins']) {
+if ($options['develop_dont_install_plugins']) {
+    cli_writeln("skipping plugin installation");
+} else {
+    cli_writeln("installing plugins");
 // install plugins
     if ($options['plugin_version'] == 'main') {
         $plugins = [
@@ -150,7 +155,7 @@ if (!$options['develop_dont_install_plugins']) {
             ];
         }
     }
-//echo json_encode($plugins);
+    cli_writeln("plugins to install: " . json_encode($plugins));
     foreach ($plugins as $plugin) {
         update_plugin($plugin);
     }

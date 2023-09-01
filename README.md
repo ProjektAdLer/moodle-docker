@@ -79,6 +79,10 @@ This documentation outlines the steps to set up a Moodle PHP development environ
 using Windows Subsystem for Linux (WSL2) and Docker Desktop. Other potential approaches are 
 described and evaluated below.
 
+**Note**: Although this approach is nearly fully automated, 
+it is not as reliable as the 3D, AMG and Backend dev environment.
+Some Linux knowledge will be very helpful to resolve potential issues.
+
 ## Requirements
 - WSL2
 - Docker Desktop
