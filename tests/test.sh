@@ -45,11 +45,14 @@ if [ $COUNT -eq $COUNT_MAX ]; then
   exit 1
 fi
 
+echo "moodle is ready, starting with curl"
+
 # Get token
 token=$(curl --location "http://${hostname}:${port}/login/token.php?username=${username}&password=${password}&service=adler_services" -s)
 
 # Extract token from response
 token=$(echo "$token" | jq -r '.token')
+echo "token is $token"
 
 # Upload course
 course_fullname=$(curl --location "http://${hostname}:${port}/webservice/rest/server.php" \
