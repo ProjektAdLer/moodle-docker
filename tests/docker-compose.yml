@@ -20,7 +20,7 @@ services:
       MOODLE_DATABASE_NAME: moodle
       USER_NAME: student,manager
       USER_PASSWORD: Student1234!1234,Manager1234!1234
-      USER_ROLE: manager,false
+      USER_ROLE: false,manager
     volumes:
       - moodle_moodle:/bitnami/moodle
       - moodle_moodledata:/bitnami/moodledata
