@@ -31,7 +31,7 @@ while [ $COUNT -lt $COUNT_MAX ]; do
     then
       break
   fi
-  echo "moodle still starting... This will typically take between 1 and 3 minutes"
+  echo "Moodle still starting... This will typically take between 1 and 3 minutes. $((COUNT * 5)) seconds passed"
   sleep 5
   COUNT=$((COUNT + 1))
 done

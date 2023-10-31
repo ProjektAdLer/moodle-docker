@@ -114,47 +114,53 @@ if ($options['first_run']) {
     }
 }
 
+function get_plugin_config() {
+    $url = __DIR__ . '/plugin-releases.json';
+//    $url = 'https://raw.githubusercontent.com/Glutamat42/moodle-docker/main/plugin-releases.json';
+    $file_content = file_get_contents($url);
+    return json_decode($file_content, true);
+}
+
+
 if ($options['develop_dont_install_plugins']) {
     cli_writeln("skipping plugin installation");
 } else {
     cli_writeln("installing plugins");
-// install plugins
-    if ($options['plugin_version'] == 'main') {
-        $plugins = [
-            [
-                "path" => $CFG->dirroot . "/local/adler",
-                "url" => "https://github.com/ProjektAdLer/MoodlePluginLocal/archive/refs/heads/main.zip"
-            ],
-            [
-                "path" => $CFG->dirroot . "/availability/condition/adler",
-                "url" => "https://github.com/ProjektAdLer/MoodlePluginAvailability/archive/refs/heads/main.zip"
-            ],
-        ];
+
+    $plugin_release_info = get_plugin_config();
+
+    $plugins = [];
+    if (isset($plugin_release_info['common_versions'][$options['plugin_version']])) {
+        foreach ($plugin_release_info['common_versions'][$options['plugin_version']] as $plugin) {
+            $path = $CFG->dirroot . $plugin['path'];
+
+            if (preg_match('/^[0-9]+(\.[0-9]+){0,2}(-rc(\.[0-9]+)?)?$/', $plugin['version'])) {
+                // plugin is a release
+                $info = get_updated_release_info(
+                    $plugin['git_project'],
+                    $plugin['version'],
+                    core_plugin_manager::instance()->get_plugin_info($plugin['name'])->release
+                );
+                if ($info) {
+                    $url = $info->zip_url;
+                } else {
+                    cli_error("Failed to get release info");
+                }
+            } else {
+                // plugin is a branch
+                $url = "https://github.com/" . $plugin['url'] . "/archive/refs/heads/" . $plugin['version'] . ".zip";
+            }
+
+            /** @noinspection PhpUndefinedVariableInspection */
+            $plugins[] = [
+                "path" => $path,
+                "url" => $url
+            ];
+        }
     } else {
-        $plugins = [];
-        $info = get_updated_release_info(
-            "ProjektAdLer/MoodlePluginLocal",
-            $options['plugin_version'],
-            core_plugin_manager::instance()->get_plugin_info('local_adler')->release
-        );
-        if ($info) {
-            $plugins[] = [
-                "path" => $CFG->dirroot . "/local/adler",
-                "url" => $info->zip_url
-            ];
-        }
-        $info = get_updated_release_info(
-            "ProjektAdler/MoodlePluginAvailability",
-            $options['plugin_version'],
-            core_plugin_manager::instance()->get_plugin_info('local_adler')->release
-        );
-        if ($info) {
-            $plugins[] = [
-                "path" => $CFG->dirroot . "/availability/condition/adler",
-                "url" => $info->zip_url
-            ];
-        }
+        cli_error("plugin version not found");
     }
+
     cli_writeln("plugins to install: " . json_encode($plugins));
     foreach ($plugins as $plugin) {
         update_plugin($plugin);
