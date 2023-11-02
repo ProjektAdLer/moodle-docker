@@ -17,19 +17,19 @@
     "main": [
       {
         "git_project": "ProjektAdLer/MoodlePluginLocal",
-        "version": "1.0.0",
+        "version": "main",
         "path": "/local/adler",
         "name": "local_adler"
       },
       {
         "git_project": "ProjektAdler/MoodlePluginAvailability",
-        "version": "1.0.0",
+        "version": "main",
         "path": "/availability/condition/adler",
         "name": "availability_adler"
       },
       {
         "git_project": "ProjektAdLer/MoodlePluginModAdleradaptivity",
-        "version": "1.0.0",
+        "version": "main",
         "path": "/mod/adleradaptivity",
         "name": "mod_adleradaptivity"
       }
