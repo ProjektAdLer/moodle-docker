@@ -148,7 +148,7 @@ if ($options['develop_dont_install_plugins']) {
                 }
             } else {
                 // plugin is a branch
-                $url = "https://github.com/" . $plugin['url'] . "/archive/refs/heads/" . $plugin['version'] . ".zip";
+                $url = "https://github.com/" . $plugin['git_project'] . "/archive/refs/heads/" . $plugin['version'] . ".zip";
             }
 
             /** @noinspection PhpUndefinedVariableInspection */
