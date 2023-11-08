@@ -28,12 +28,15 @@ function get_updated_release_info(string $github_repo, string $version, string $
     $matchingReleases = array_filter($releases, function ($release) use ($version) {
         return strpos($release['tag_name'], $version) === 0;
     });
+    cli_writeln("Matching releases: " . json_encode($matchingReleases));
 
     usort($matchingReleases, function ($a, $b) {
         return version_compare($a['tag_name'], $b['tag_name'], '<=') ? 1 : -1;
     });
+    cli_writeln("Sorted matching releases: " . json_encode($matchingReleases));
 
     $latestRelease = reset($matchingReleases);
+    cli_writeln("Latest release: " . json_encode($latestRelease));
 
     if ($old_version !== null && $latestRelease['tag_name'] === $old_version) {
         return false;
