@@ -145,7 +145,7 @@ if ($options['develop_dont_install_plugins']) {
                 if ($info === false) {
                     cli_writeln("No update available for {$plugin['name']} {$plugin['version']}");
                     continue;
-                } else if ($info !== null && property_exists('tag_name', $info)) {
+                } else if ($info !== null && property_exists($info, 'tag_name')) {
                     // checking for one of the keys is sufficient
                     $url = $info->zip_url;
                 } else {
