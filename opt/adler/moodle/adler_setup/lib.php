@@ -15,6 +15,8 @@ use \core\event\user_created;
  * @return object|false
  */
 function get_updated_release_info(string $github_repo, string $version, string $old_version = null) {
+    cli_writeln("Params for get_updated_release_info: github_repo=$github_repo, version=$version, old_version=$old_version");
+
     $url = "https://api.github.com/repos/" . $github_repo . "/releases";
     cli_writeln("Fetching release info from $url");
 
