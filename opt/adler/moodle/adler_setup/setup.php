@@ -141,10 +141,15 @@ if ($options['develop_dont_install_plugins']) {
                     $plugin['version'],
                     core_plugin_manager::instance()->get_plugin_info($plugin['name'])->release
                 );
-                if ($info) {
+
+                if ($info === false) {
+                    cli_writeln("No update available for {$plugin['name']} {$plugin['version']}");
+                    continue;
+                } else if ($info !== null && property_exists('tag_name', $info)) {
+                    // checking for one of the keys is sufficient
                     $url = $info->zip_url;
                 } else {
-                    cli_error("Failed to get release info");
+                    cli_error("Failed to get release info for {$plugin['name']} {$plugin['version']}");
                 }
             } else {
                 // plugin is a branch
