@@ -73,6 +73,26 @@
         "path": "/mod/adleradaptivity",
         "name": "mod_adleradaptivity"
       }
+    ],
+    "3.0.0": [
+      {
+        "git_project": "ProjektAdLer/MoodlePluginLocal",
+        "version": "3.0.0",
+        "path": "/local/adler",
+        "name": "local_adler"
+      },
+      {
+        "git_project": "ProjektAdler/MoodlePluginAvailability",
+        "version": "3.0.0",
+        "path": "/availability/condition/adler",
+        "name": "availability_adler"
+      },
+      {
+        "git_project": "ProjektAdLer/MoodlePluginModAdleradaptivity",
+        "version": "2.1.0",
+        "path": "/mod/adleradaptivity",
+        "name": "mod_adleradaptivity"
+      }
     ]
   }
 }
