@@ -63,6 +63,21 @@ USER_ROLE=false,manager,false
 ## Sample docker-compose.yml
 see [tests/docker-compose.yml](tests/docker-compose.yml)
 
+## Updating moodle
+> [!IMPORTANT]  
+> The moodle release is NOT updated automatically in any way! \
+> Incrementing MOODLE_VERSION build arg will not result in an update of moodle.
+
+Moodle updates have to be done manually (Plugins are not affected by this issue).
+Follow the [Bitnami Moodle Upgrade Guide](https://docs.bitnami.com/aws/apps/moodle/administration/upgrade/).
+Sadly it is not easy to automate that process as moodle itself does not provide a way to automatically update moodle.
+
+It might be within the realm of possibility to provide AdLer images with moodle and Plugins preinstalled, 
+but with this approach all additional plugins would be deleted after every update (potentially breaking moodle). 
+
+A possible approach to mitigate this issue might be placing an overlay volume on top of the whole moodle directory of this
+moodle image. But it is unknown whether this would work and what potential issues might arise from this.
+
 ## Docker Build Arguments
 
 When building the Docker image for this project, you can customize the following arguments:
