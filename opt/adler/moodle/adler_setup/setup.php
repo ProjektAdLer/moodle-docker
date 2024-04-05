@@ -102,13 +102,6 @@ if ($options['first_run']) {
     // enable webservices
     set_config('enablewebservices', true);
 
-    // enable moodle mobile web service
-    // TODO: we are not using moodle official mobile service anymore
-//    set_config('enablemobilewebservice', true);  // for any reason this does not set the corresponding option in the web ui and everything seems to work without it anyway.
-    $external_service_record = $DB->get_record('external_services', array('shortname' => MOODLE_OFFICIAL_MOBILE_SERVICE));
-    $external_service_record->enabled = 1;
-    $DB->update_record('external_services', $external_service_record);
-
     // Enable REST server.
     $activeprotocols = empty($CFG->webserviceprotocols) ? array() : explode(',', $CFG->webserviceprotocols);
 
