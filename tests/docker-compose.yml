@@ -4,8 +4,9 @@ services:
     build:
       context: ..
       args:
-        PLUGIN_VERSION: 1.0.0
-        MOODLE_VERSION: 4.2
+#        PLUGIN_VERSION: main
+        PLUGIN_VERSION: 3.1.0
+        MOODLE_VERSION: 4.3
     ports:
       - '8000:8080'
     environment:
@@ -19,8 +20,10 @@ services:
       MOODLE_DATABASE_PASSWORD: moodle
       MOODLE_DATABASE_NAME: moodle
       USER_NAME: student,manager
-      USER_PASSWORD: Student1234!1234,Manager1234!1234
-      USER_ROLE: false,manager
+      USER_PASSWORD: Student1234.1234,Manager1234.1234
+      USER_ROLE: false,false
+      USER_CREATE_ADLER_COURSE_CATEGORY: "false, true"
+      BITNAMI_DEBUG: true
     volumes:
       - moodle_moodle:/bitnami/moodle
       - moodle_moodledata:/bitnami/moodledata
@@ -29,7 +32,9 @@ services:
     restart: unless-stopped
 
   db_moodle:
-    image: docker.io/bitnami/mariadb:10.6
+    image: bitnami/mariadb:10.11
+    ports:
+      - '3306:3306'
     environment:
       MARIADB_USER: moodle
       MARIADB_PASSWORD: moodle

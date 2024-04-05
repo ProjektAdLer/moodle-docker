@@ -13,7 +13,7 @@
 # inject adler update
 if ! grep "/opt/adler/setup.sh" /opt/bitnami/scripts/moodle/entrypoint.sh > /dev/null ; then
   echo "inject adler update"
-  sed -i '/^exec "$@".*/i /opt/adler/setup.sh' /opt/bitnami/scripts/moodle/entrypoint.sh
+  sed -i '/^exec "$@".*/i echo "starting adler setup script" && /opt/adler/setup.sh' /opt/bitnami/scripts/moodle/entrypoint.sh
 fi
 
 

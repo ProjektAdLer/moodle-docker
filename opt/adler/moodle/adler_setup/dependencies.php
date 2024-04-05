@@ -1,0 +1,3 @@
+<?php
+
+$MINIMUM_PLUGIN_RELEASE_SET = "3.1.0";

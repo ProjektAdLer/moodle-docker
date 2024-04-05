@@ -1,11 +1,11 @@
 <?php
 
+global $CFG;
 require_once($CFG->dirroot . '/user/profile/lib.php');
 require_once($CFG->dirroot . '/user/lib.php');
 
-
-use core_plugin_manager;
-use \core\event\user_created;
+use local_adler\plugin_interface;
+use core\event\user_created;
 
 
 /** Get Infos (incl download urls) of release to update to. Will return false if nothing to update
@@ -139,6 +139,19 @@ function create_users($options) {
     $users_data['last_name'] = $options['user_last_name'] ? explode(',', $options['user_last_name']) : array_fill(0, count($users_data['name']), "false");
     $users_data['email'] = $options['user_email'] ? explode(',', $options['user_email']) : array_fill(0, count($users_data['name']), "false");
     $users_data['role'] = $options['user_role'] ? explode(',', $options['user_role']) : array_fill(0, count($users_data['name']), "false");
+    $users_data['create_adler_course_category'] = $options['user_create_adler_course_category'] ? explode(',', $options['user_create_adler_course_category']) : array_fill(0, count($users_data['name']), "false");
+
+    // trim all values
+    foreach (array_keys($users_data) as $key) {
+        $users_data[$key] = array_map('trim', $users_data[$key]);
+    }
+
+    // in case any value is empty, set to false
+    foreach (array_keys($users_data) as $key) {
+        $users_data[$key] = array_map(function ($value) {
+            return empty($value) ? "false" : $value;
+        }, $users_data[$key]);
+    }
 
     // validation
     foreach (array_keys($users_data) as $key) {
@@ -147,11 +160,22 @@ function create_users($options) {
 
 
     for ($i = 0; $i < count($users_data['name']); $i++) {
+        // for optional fields, fill with default values if not set
         $first_name = $users_data['first_name'][$i] != "false" ? $users_data['first_name'][$i] : $users_data['name'][$i];
         $last_name = $users_data['last_name'][$i] != "false" ? $users_data['last_name'][$i] : $users_data['name'][$i];
         $role = $users_data['role'][$i] == "false" ? false : $users_data['role'][$i];
         $email = $users_data['email'][$i] != "false" ?: $users_data['name'][$i] . '@example.example';
 
-        create_one_user($users_data['name'][$i], $users_data['password'][$i], $first_name, $last_name, $email, $role);
+        $user = create_one_user($users_data['name'][$i], $users_data['password'][$i], $first_name, $last_name, $email, $role);
+
+        if ($users_data['create_adler_course_category'][$i] == "true") {
+            cli_writeln("creating course category with upload permission for user " . $user->username);
+            create_default_course_category_for_user($user->username);
+        }
     }
+}
+
+function create_default_course_category_for_user($username) {
+    // use local_adler cli script
+    plugin_interface::create_category_user_can_create_courses_in($username, 'adler_manager');
 }
