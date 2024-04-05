@@ -48,10 +48,11 @@ fi
 echo "moodle is ready, starting with curl"
 
 # Get token
-token=$(curl --location "http://${hostname}:${port}/login/token.php?username=${username}&password=${password}&service=adler_services" -s)
+token_response=$(curl --location "http://${hostname}:${port}/login/token.php?username=${username}&password=${password}&service=adler_services" -s)
 
 # Extract token from response
-token=$(echo "$token" | jq -r '.token')
+echo "response is $token_response"
+token=$(echo "$token_response" | jq -r '.token')
 echo "token is $token"
 
 # Upload course
