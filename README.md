@@ -112,7 +112,8 @@ These arguments allow you to control the versions of Moodle and the plugin that 
 requirements and preferences.
 
 ## Install additional languages
-1) Install the required system locale by modifying the Dockerfile
+1) Install the required system locale by modifying the Dockerfile. You can see which one you need by manually enabling the desired
+language pack in moodle and checking the displayed error message.
 2) Install the moodle language pack either via web interface or by modifying the setup.php script (add an additional 
    `install_language_pack` call for the desired language)
 
