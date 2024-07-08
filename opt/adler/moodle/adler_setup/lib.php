@@ -189,7 +189,7 @@ function create_default_course_category_for_user($username) {
  */
 function is_language_pack_installed(string $language_code): bool {
     $installed_langs = get_string_manager()->get_list_of_translations();
-    return str_contains($installed_langs, "($language_code)");
+    return str_contains(implode('', $installed_langs), "($language_code)");
 }
 
 /**
