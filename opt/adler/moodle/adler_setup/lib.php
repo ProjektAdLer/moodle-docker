@@ -6,6 +6,8 @@ require_once($CFG->dirroot . '/user/lib.php');
 
 use local_adler\plugin_interface;
 use core\event\user_created;
+use tool_langimport\controller as lang_controller;
+
 
 
 /** Get Infos (incl download urls) of release to update to. Will return false if nothing to update
@@ -178,4 +180,37 @@ function create_users($options) {
 function create_default_course_category_for_user($username) {
     // use local_adler cli script
     plugin_interface::create_category_user_can_create_courses_in($username, 'adler_manager');
+}
+
+
+/**
+ * @param $language_code string language code. List of valid codes can be found at Site administration -> Language -> Language packs
+ * @return bool
+ */
+function is_language_pack_installed(string $language_code): bool {
+    $installed_langs = get_string_manager()->get_list_of_translations();
+    return str_contains($installed_langs, "($language_code)");
+}
+
+/**
+ * @param $language_code string language code. List of valid codes can be found at Site administration -> Language -> Language packs
+ * @return void
+ */
+function install_language_pack(string $language_code): void {
+    if (is_language_pack_installed($language_code)) {
+        cli_writeln("Language pack already installed");
+        return;
+    }
+
+    $lang_controller = new lang_controller();
+    try {
+        $result = $lang_controller->install_languagepacks($language_code);
+        if ($result == 1) {
+            cli_writeln("Language \"" . $language_code . "\" was installed");
+        } else {
+            cli_error("Language \"" . $language_code . "\" was not installed. The reason is unknown due to moodle limitations.");
+        }
+    } catch (Exception $e) {
+        cli_error("Failed to install language pack \"$language_code\". Reason: " . $e->getMessage());
+    }
 }

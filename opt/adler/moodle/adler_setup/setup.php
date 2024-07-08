@@ -139,4 +139,7 @@ if ($options['first_run']) {
         cli_writeln("creating user(s)");
         create_users($options);
     }
+
+    // activate german language pack
+    install_language_pack('de');
 }

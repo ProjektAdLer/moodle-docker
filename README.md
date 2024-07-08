@@ -111,6 +111,11 @@ When building the Docker image for this project, you can customize the following
 These arguments allow you to control the versions of Moodle and the plugin that are used during the image build process. You can adjust these values according to your specific
 requirements and preferences.
 
+## Install additional languages
+1) Install the required system locale by modifying the Dockerfile
+2) Install the moodle language pack either via web interface or by modifying the setup.php script (add an additional 
+   `install_language_pack` call for the desired language)
+
 ## Troubleshooting
 
 **Moodle setup fails with "The configuration file config.php alreaady exists. ...":** \

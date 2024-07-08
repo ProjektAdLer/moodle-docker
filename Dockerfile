@@ -3,6 +3,9 @@ ARG PLUGIN_VERSION=main
 
 FROM bitnami/moodle:${MOODLE_VERSION}
 
+# generate german language files
+RUN sed -i 's/^# de_DE.UTF-8 UTF-8$/de_DE.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
+
 RUN apt update && apt install curl unzip nano -y
 COPY opt/adler /opt/adler
 COPY plugin-releases.json /opt/adler/moodle/adler_setup
