@@ -115,9 +115,9 @@ if ($options['develop_dont_install_plugins']) {
 
 // upgrade moodle installation
 cli_writeln("Upgrading moodle installation...");
-$cmd = "php {$CFG->dirroot}/admin/cli/upgrade.php --non-interactive --allow-unstable";
+$cmd = "php {$CFG->dirroot}/admin/cli/upgrade.php --non-interactive --allow-unstable 2>&1";
 cli_writeln("Executing: $cmd");
-exec($cmd, $blub, $result_code);
+passthru($cmd, $result_code);
 if ($result_code != 0) {
     cli_error('command execution failed');
 }
