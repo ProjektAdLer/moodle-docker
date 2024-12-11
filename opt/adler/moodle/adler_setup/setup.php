@@ -85,7 +85,8 @@ if (do_adler_roles_exist()) {
         'moodle/restore:rolldates',
         'moodle/restore:uploadfile',
         'moodle/restore:userinfo',
-        'moodle/restore:viewautomatedfilearea'
+        'moodle/restore:viewautomatedfilearea',
+        'moodle/h5p:deploy'
     ];
     foreach ($capabilities_adler_manager as $capability) {
         assign_capability($capability, CAP_ALLOW, $role_adler_manager_id, context_system::instance());
