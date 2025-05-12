@@ -1,5 +1,11 @@
 # Moodle Bitnami Image Extension - User Creation, PHP Environment Variables, and AdLer Setup
 
+> [!NOTE]  
+> **Note:**  
+> This project has been succeeded by [MoodleAdlerLMS](https://github.com/ProjektAdLer/MoodleAdlerLMS).  
+> All future development continues in MoodleAdlerLMS, which is a fork of this repository.  
+> This repository has been frozen to ensure compatibility with legacy deployments and to serve archival purposes.
+
 This project extends the bitnami/moodle image with the following features:
 
 - Setting up AdLer (after the first start the Moodle part of AdLer is fully set up).
